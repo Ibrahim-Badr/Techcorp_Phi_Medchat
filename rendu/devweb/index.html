@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechCorp - Assistant IA Médical</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <button id="new-chat-btn" class="new-chat-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                Nouvelle discussion
+            </button>
+            <div class="search-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input type="text" id="history-search-input" placeholder="Rechercher une discussion...">
+            </div>
+            <div class="history-list" id="history-list">
+                <!-- Conversation items will appear here -->
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-profile" id="user-profile" title="Changer d'utilisateur">
+                    <div class="avatar" id="user-avatar">U</div>
+                    <div class="user-name" id="user-name-display">Utilisateur</div>
+                </div>
+                <div class="server-status" id="server-status" title="Vérification de la connexion...">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connexion...</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Zone principale de chat -->
+        <main class="chat-container">
+            <button id="export-btn" class="export-btn" title="Télécharger la discussion" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Exporter
+            </button>
+            <!-- Messages -->
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will appear here -->
+            </div>
+            <footer class="chat-input-area">
+                <div class="input-wrapper">
+                    <form id="chat-form" class="input-form">
+                        <textarea id="message-input" placeholder="Posez votre question médicale ici..." rows="1"></textarea>
+                        <button type="submit" id="send-btn">Envoyer</button>
+                    </form>
+                </div>
+            </footer>
+        </main>
+    </div>
+    
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3>Modifier le profil</h3>
+            <div class="modal-body">
+                <label for="profile-name-input">Nom :</label>
+                <input type="text" id="profile-name-input" placeholder="Votre nom">
+                
+                <label>Avatar :</label>
+                <div class="avatar-options" style="justify-content: center; margin-bottom: 24px;">
+                    <label for="profile-avatar-file" class="file-upload-btn" style="width: 100%; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                        Choisir une image
+                    </label>
+                    <input type="file" id="profile-avatar-file" accept="image/*" style="display: none;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="profile-cancel-btn" class="cancel-btn">Annuler</button>
+                <button id="profile-save-btn" class="save-btn">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rename Modal -->
+    <div id="rename-modal" class="center-modal-overlay" style="display: none;">
+        <div class="center-modal-content">
+            <h3>Renommer la discussion</h3>
+            <div class="modal-body">
+                <input type="text" id="rename-input" placeholder="Nouveau nom">
+            </div>
+            <div class="modal-footer">
+                <button id="rename-cancel-btn" class="cancel-btn">Annuler</button>
+                <button id="rename-save-btn" class="save-btn">Renommer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div id="delete-modal" class="center-modal-overlay" style="display: none;">
+        <div class="center-modal-content">
+            <h3>Supprimer la discussion</h3>
+            <div class="modal-body">
+                <p style="margin-bottom: 16px; font-size: 0.95rem; color: #d1d5db;">Êtes-vous sûr de vouloir supprimer cette discussion ? Cette action est irréversible.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="delete-cancel-btn" class="cancel-btn">Annuler</button>
+                <button id="delete-confirm-btn" class="save-btn" style="background-color: #ef4444;">Supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
