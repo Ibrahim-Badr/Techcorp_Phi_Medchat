@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechCorp - Assistant IA Financier</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <button id="new-chat-btn" class="new-chat-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                Nouvelle discussion
+            </button>
+            <div class="history-list" id="history-list">
+                <!-- Conversation items will appear here -->
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">D</div>
+                    <div class="user-name">Dylan (Dev Web)</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-container">
+            <header class="chat-header">
+                <div class="logo">TechCorp</div>
+                <div class="header-right">
+                    <span class="model-info">Modèle: Phi-3.5-Financial</span>
+                </div>
+            </header>
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will appear here -->
+            </div>
+            <footer class="chat-input-area">
+                <div class="input-wrapper">
+                    <div id="file-preview" class="file-preview"></div>
+                    <form id="chat-form">
+                        <button type="button" id="attach-btn" class="attach-btn" title="Joindre une image">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                            </svg>
+                        </button>
+                        <input type="file" id="file-input" accept="image/*" style="display: none;" multiple />
+                        <textarea id="message-input" placeholder="Posez votre question financière ici..." rows="1"></textarea>
+                        <button type="submit" id="send-btn">Envoyer</button>
+                    </form>
+                </div>
+            </footer>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
