@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentAbortController = new AbortController();
 
         try {
-            let promptText = 'Système: Tu es un assistant IA spécialisé. Tu dois IMPÉRATIVEMENT répondre en français à toutes les questions, même si on te parle dans une autre langue.\n';
+            let promptText = 'Système: Tu es un assistant IA spécialisé dans le domaine médical. Tu dois IMPÉRATIVEMENT répondre en français à toutes les questions, même si on te parle dans une autre langue. Ne parle pas de finance.\n';
             currentSession.messages.forEach(m => {
                 if (m.content) {
                     promptText += `${m.role === 'user' ? 'Utilisateur' : 'Assistant'}: ${m.content}\n`;
