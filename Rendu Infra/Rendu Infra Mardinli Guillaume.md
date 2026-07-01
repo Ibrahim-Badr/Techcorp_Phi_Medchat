@@ -1,4 +1,4 @@
-# 🏗️ INFRA — Déploiement Phi-3.5-Financial
+# 🏗️ INFRA — Déploiement Phi-3.5-Financial MARDINLI GUILLAUME
 
 ## Choix technique
 **Ollama**, pour la simplicité et la rapidité de mise en place (7h de challenge, pas de GPU dispo).
