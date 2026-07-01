@@ -3,6 +3,10 @@ import hashlib
 import os
 from datetime import datetime
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+OUTPUT_DIR = os.path.join(BASE_DIR, "rendu", "data")
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
 def load_json(path):
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -77,8 +81,8 @@ Dataset validated and ready for experimental LoRA fine-tuning of the medical mod
 """
     return md
 
-train = load_json("datasets/medical_dataset_final.json")
-test = load_json("datasets/medical_test_dataset.json")
+train = load_json(os.path.join(BASE_DIR, "datasets", "medical_dataset_final.json"))
+test = load_json(os.path.join(BASE_DIR, "datasets", "medical_test_dataset.json"))
 
 train_stats = analyze(train, "Training Set (medical_dataset_final.json)")
 test_stats = analyze(test, "Test Set (medical_test_dataset.json)")
@@ -88,8 +92,7 @@ print_console(test_stats)
 
 report = build_markdown(train_stats, test_stats)
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-output_path = os.path.join(BASE_DIR, "MEDICAL_DATA_QUALITY_REPORT.md")
+output_path = os.path.join(OUTPUT_DIR, "MEDICAL_DATA_QUALITY_REPORT.md")
 
 with open(output_path, "w", encoding="utf-8") as f:
     f.write(report)
