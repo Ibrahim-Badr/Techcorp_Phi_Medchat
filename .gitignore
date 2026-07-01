@@ -1,18 +1,28 @@
-datasets/dataset_v0.json
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# OS / editor
 .DS_Store
+.vscode/
+.idea/
 
-datasets/finance_dataset_final.json
-datasets/test_dataset_16000.json
-models/phi3_financial/adapter_model.safetensors
-models/phi3_financial/tokenizer.json
-models/phi3_financial/tokenizer_config.json
-models/phi3_financial/adapter_config.json
-models/phi3_financial/special_tokens_map.json
+# Build / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
 
-datasets/finance_dataset_final.json
-datasets/test_dataset_16000.json
-models/phi3_financial/adapter_model.safetensors
-models/phi3_financial/tokenizer.json
-models/phi3_financial/tokenizer_config.json
-models/phi3_financial/adapter_config.json
-models/phi3_financial/special_tokens_map.json
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Datasets — regenerate via scripts/cleaning_*/main_*.py
+datasets/
