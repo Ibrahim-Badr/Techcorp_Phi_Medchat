@@ -340,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const requestBody = {
                 model: 'phi3-financial',
                 prompt: promptText,
-                stream: false,
+                stream: true,
                 options: {
                     num_predict: 4096
                 }
@@ -364,13 +364,72 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`Erreur HTTP: ${response.status}${errorDetails ? ' - ' + errorDetails : ''}`);
             }
 
-            const data = await response.json();
-            const assistantMessage = data.response; // Pour l'endpoint /generate, c'est .response
-
             removeLoadingIndicator(loadingId);
+
+            // Préparation de l'interface pour le streaming en direct
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message system';
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            messageDiv.appendChild(contentDiv);
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+
+            // Lecture du flux (streaming)
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder('utf-8');
+            let assistantMessage = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                
+                const chunkText = decoder.decode(value, { stream: true });
+                const lines = chunkText.split('\n');
+                
+                for (const line of lines) {
+                    if (line.trim() !== '') {
+                        try {
+                            const parsed = JSON.parse(line);
+                            if (parsed.response) {
+                                assistantMessage += parsed.response;
+                                // Rendu en direct (Markdown)
+                                if (typeof marked !== 'undefined') {
+                                    contentDiv.innerHTML = marked.parse(assistantMessage);
+                                } else {
+                                    contentDiv.textContent = assistantMessage;
+                                }
+                                scrollToBottom();
+                            }
+                        } catch (e) {
+                            // Ignorer les fragments JSON incomplets
+                        }
+                    }
+                }
+            }
+
+            // Ajout du bouton de copie une fois le message terminé
+            if (exportBtn) exportBtn.style.display = 'flex';
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.title = "Copier";
+            copyBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+            `;
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(assistantMessage).then(() => {
+                    const originalHTML = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#10b981" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>';
+                    setTimeout(() => { copyBtn.innerHTML = originalHTML; }, 2000);
+                }).catch(err => console.error("Erreur de copie", err));
+            };
+            messageDiv.appendChild(copyBtn);
+
+            // Sauvegarde de la session avec le message final complet
             currentSession.messages.push({ role: 'assistant', content: assistantMessage });
             saveData();
-            addMessageToUI('system', assistantMessage, true);
 
         } catch (error) {
             removeLoadingIndicator(loadingId);
