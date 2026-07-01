@@ -1,6 +1,11 @@
 import json
+import os
 import hashlib
 from datetime import datetime
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+OUTPUT_DIR = os.path.join(BASE_DIR, "rendu", "data")
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def load_json(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -75,8 +80,8 @@ Dataset validated and ready for LoRA fine-tuning of Phi-3.5-Financial.
 """
     return md
 
-train = load_json("datasets/finance_dataset_final.json")
-test = load_json("datasets/test_dataset_16000.json")
+train = load_json(os.path.join(BASE_DIR, "datasets", "finance_dataset_final.json"))
+test = load_json(os.path.join(BASE_DIR, "datasets", "test_dataset_16000.json"))
 
 train_stats = analyze(train, "Training Set (finance_dataset_final.json)")
 test_stats = analyze(test, "Test Set (test_dataset_16000.json)")
@@ -85,7 +90,7 @@ print_console(train_stats)
 print_console(test_stats)
 
 report = build_markdown(train_stats, test_stats)
-output_path = "scripts/cleaning_financial_dataset/FINANCIAL_DATA_QUALITY_REPORT.md"
+output_path = os.path.join(OUTPUT_DIR, "FINANCIAL_DATA_QUALITY_REPORT.md")
 with open(output_path, "w", encoding="utf-8") as f:
     f.write(report)
 

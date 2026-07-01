@@ -1,3 +1,4 @@
+import json
 import subprocess
 import sys
 import os
@@ -20,3 +21,9 @@ for step in steps:
         sys.exit(1)
 
 print("\nMedical dataset pipeline completed successfully.")
+
+def dataset_stats(data, label):
+    total = len(data)
+    duplicates = total - len(set(json.dumps(d, sort_keys=True) for d in data))
+    empty = sum(1 for d in data if not str(d).strip())
+    print(f"{label}: total={total}, doublons={duplicates}, vides={empty}")
