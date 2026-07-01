@@ -904,7 +904,7 @@ body {
 }
 .message-content strong {
     font-weight: 600;
-    color: #ffffff;
+    color: inherit;
 }
 .message-content a {
     color: #3b82f6;
